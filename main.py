@@ -1,43 +1,28 @@
-import random
+def frase_para_binario(frase):
+    # Converte a frase para uma sequência de bytes em formato UTF-8
+    bytes_utf8 = frase.encode('utf-8')
+    
+    # Converte cada byte para sua representação em binário
+    binarios = [bin(byte)[2:].zfill(8) for byte in bytes_utf8]
+    
+    # Junta todos os binários em uma única string
+    frase_binario = ''.join(binario for binario in binarios)
+    
+    return frase_binario
 
-cartas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-
-
-tabuleiro = cartas + cartas
-
-random.shuffle(tabuleiro)
-
-cartas_adivinhadas = []
-
-# Função para exibir o tabuleiro atual
-def exibir_tabuleiro():
-    for i in range(len(tabuleiro)):
-        if i in cartas_adivinhadas:
-            print(tabuleiro[i], end=' ')
-        else:
-            print('*', end=' ')
-        if (i + 1) % 4 == 0:
-            print()
-
-# Loop principal do jogo
 while True:
-    exibir_tabuleiro()
-    print('Digite a posição da primeira carta (1-8): ')
-    posicao1 = int(input()) - 1
-    cartas_adivinhadas.append(posicao1)
+    # Solicita ao usuário que digite uma frase
+    frase = input("Digite uma frase: ")
 
-    exibir_tabuleiro()
-    print('Digite a posição da segunda carta (1-8): ')
-    posicao2 = int(input()) - 1
-    cartas_adivinhadas.append(posicao2)
+    # Chama a função para converter a frase em binário
+    frase_binario = frase_para_binario(frase)
 
-    if tabuleiro[posicao1] == tabuleiro[posicao2]:
-        print('Parabéns, você encontrou um par!')
-    else:
-        print('As cartas não são iguais, tente novamente.')
-        cartas_adivinhadas.remove(posicao1)
-        cartas_adivinhadas.remove(posicao2)
-
-    if len(cartas_adivinhadas) == len(tabuleiro):
-        print('Você ganhou o jogo!')
-        break
+    # Imprime a frase em binário
+    print("Frase em binário: ", frase_binario)
+    
+    # Pergunta ao usuário se deseja fazer outra pergunta ou sair
+    opcao = input("Deseja fazer outra pergunta? (S/N): ")
+    if opcao.lower() != 's':
+        break  
+print()
+print("Obrigado por usar nosso tradutor")

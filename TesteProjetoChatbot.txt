@@ -1,0 +1,191 @@
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import com.openai.api.ChatCompletion;
+import com.openai.api.ChatCompletion.Builder;
+
+public class ChatBotApplication extends Application {
+    private TextArea chatArea;
+    private TextField inputField;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("ChatBot");
+
+        BorderPane layout = new BorderPane();
+        VBox chatContainer = new VBox(10);
+        chatContainer.setPadding(new Insets(10));
+
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+
+        ScrollPane scrollPane = new ScrollPane(chatArea);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
+
+        inputField = new TextField();
+        inputField.setOnAction(e -> processUserInput());
+
+        Button sendButton = new Button("Send");
+        sendButton.setOnAction(e -> processUserInput());
+
+        chatContainer.getChildren().addAll(scrollPane, inputField, sendButton);
+        layout.setCenter(chatContainer);
+
+        Scene scene = new Scene(layout, 400, 500);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void processUserInput() {
+        String userInput = inputField.getText().trim();
+        if (!userInput.isEmpty()) {
+            appendMessage("User: " + userInput);
+            inputField.clear();
+
+            String response = getChatbotResponse(userInput);
+            appendMessage("ChatBot: " + response);
+        }
+    }
+
+    private void appendMessage(String message) {
+        Platform.runLater(() -> {
+            chatArea.appendText(message + "\n");
+            chatArea.positionCaret(chatArea.getLength());
+        });
+    }
+
+    private String getChatbotResponse(String userInput) {
+        try {
+            Builder builder = ChatCompletion.builder()
+                    .prompt(userInput)
+                    .maxTokens(50)
+                    .temperature(0.6)
+                    .n(1);
+
+            // Aqui você precisa adicionar sua chave de API do OpenAI
+            String apiKey = "YOUR_API_KEY";
+            builder = builder.apiKey(apiKey);
+
+            ChatCompletion chatCompletion = builder.build();
+            ChatCompletion.Result result = chatCompletion.create();
+
+            if (result != null && result.choices() != null && !result.choices().isEmpty()) {
+                return result.choices().get(0).text();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "Sorry, I couldn't generate a response.";
+    }
+}
+
+
+
+
+
+
+
+
+==============================================================================================================================================================
+
+
+
+
+
+
+
+
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class ChatBotApplication extends Application {
+    private TextArea chatArea;
+    private TextField inputField;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("ChatBot");
+
+        BorderPane layout = new BorderPane();
+        VBox chatContainer = new VBox(10);
+        chatContainer.setPadding(new Insets(10));
+
+        chatArea = new TextArea();
+        chatArea.setEditable(false);
+
+        ScrollPane scrollPane = new ScrollPane(chatArea);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
+
+        inputField = new TextField();
+        inputField.setOnAction(e -> processUserInput());
+
+        Button sendButton = new Button("Send");
+        sendButton.setOnAction(e -> processUserInput());
+
+        chatContainer.getChildren().addAll(scrollPane, inputField, sendButton);
+        layout.setCenter(chatContainer);
+
+        Scene scene = new Scene(layout, 400, 500);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void processUserInput() {
+        String userInput = inputField.getText().trim();
+        if (!userInput.isEmpty()) {
+            appendMessage("User: " + userInput);
+            inputField.clear();
+
+            String response = getChatbotResponse(userInput);
+            appendMessage("ChatBot: " + response);
+        }
+    }
+
+    private void appendMessage(String message) {
+        Platform.runLater(() -> {
+            chatArea.appendText(message + "\n");
+            chatArea.positionCaret(chatArea.getLength());
+        });
+    }
+
+    private String getChatbotResponse(String userInput) {
+        // Implemente aqui a lógica de interação com o ChatGPT
+        // por meio de uma chamada à API ou usando uma biblioteca Java específica
+
+        // Exemplo de resposta estática para fins de demonstração
+        return "Olá! Sou o ChatBot. Como posso ajudar você?";
+    }
+}
+

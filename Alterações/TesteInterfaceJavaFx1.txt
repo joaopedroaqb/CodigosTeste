@@ -1,0 +1,103 @@
+package SeiLA;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    private Clientes clientes = new Clientes();
+    private Funcionarios funcionarios = new Funcionarios();
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        TextField nomeField = new TextField();
+        nomeField.setPromptText("Nome do Acionista");
+
+        Button addAcionistaButton = new Button("Adicionar Acionista");
+        addAcionistaButton.setOnAction(e -> {
+            clientes.setNome(nomeField.getText());
+            clientes.titular();
+        });
+
+        Button cancelarAcaoButton = new Button("Cancelar Ação");
+        cancelarAcaoButton.setOnAction(e -> {
+        });
+
+        TextField quantidadeParcelasField = new TextField();
+        quantidadeParcelasField.setPromptText("Quantidade de Parcelas");
+
+        Button fazerPagamentoButton = new Button("Fazer Pagamento");
+        fazerPagamentoButton.setOnAction(e -> {
+            int quantidadeParcelas = Integer.parseInt(quantidadeParcelasField.getText());
+            clientes.fazer_pagamento(quantidadeParcelas);
+        });
+
+        TextField nomeFuncionarioField = new TextField();
+        nomeFuncionarioField.setPromptText("Nome do Funcionário");
+
+        Button addFuncionarioButton = new Button("Adicionar Funcionário");
+        addFuncionarioButton.setOnAction(e -> {
+            funcionarios.setNome(nomeFuncionarioField.getText());
+        });
+
+        Button removerFuncionarioButton = new Button("Remover Funcionário");
+        removerFuncionarioButton.setOnAction(e -> {
+        });
+
+        Button buscarFuncionarioButton = new Button("Buscar Funcionário");
+        buscarFuncionarioButton.setOnAction(e -> {
+            String nomeFuncionario = nomeFuncionarioField.getText();
+            Funcionario funcionario = funcionarios.buscarFuncionario(nomeFuncionario);
+            if (funcionario != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Informações do Funcionário");
+                alert.setHeaderText("Nome: " + funcionario.getNome());
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Funcionário não encontrado");
+                alert.setHeaderText("O funcionário com o nome \"" + nomeFuncionario + "\" não foi encontrado.");
+                alert.showAndWait();
+            }
+        });
+
+        Button buscarAcionistaButton = new Button("Buscar Acionista");
+        buscarAcionistaButton.setOnAction(e -> {
+            String nomeAcionista = nomeField.getText();
+            Acionista acionista = clientes.buscarAcionista(nomeAcionista);
+            if (acionista != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Informações do Acionista");
+                alert.setHeaderText("Nome: " + acionista.getNome());
+                alert.setContentText("Dependentes: " + acionista.getDependentes() + "\nParcelas em atraso: " + acionista.getParcelasAtraso());
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Acionista não encontrado");
+                alert.setHeaderText("O acionista com o nome \"" + nomeAcionista + "\" não foi encontrado.");
+                alert.showAndWait();
+            }
+        });
+
+        VBox layout = new VBox();
+        layout.getChildren().addAll(
+                nomeField, addAcionistaButton, cancelarAcaoButton,
+                quantidadeParcelasField, fazerPagamentoButton,
+                nomeFuncionarioField, addFuncionarioButton,
+                removerFuncionarioButton, buscarFuncionarioButton,
+                buscarAcionistaButton
+        );
+
+        Scene scene = new Scene(layout, 300, 400);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}

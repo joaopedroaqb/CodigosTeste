@@ -1,0 +1,239 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LoginInterface extends Application {
+    private List<Acionista> acionistas;
+    private List<Funcionario> funcionarios;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        acionistas = new ArrayList<>();
+        funcionarios = new ArrayList<>();
+
+        primaryStage.setTitle("Sistema de Login");
+        primaryStage.setResizable(false);
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setPadding(new Insets(10));
+
+        // Painel de login
+        GridPane loginPane = createLoginPane();
+        borderPane.setCenter(loginPane);
+
+        // Barra de menu
+        MenuBar menuBar = createMenuBar();
+        borderPane.setTop(menuBar);
+
+        primaryStage.setScene(new Scene(borderPane, 400, 300));
+        primaryStage.show();
+    }
+
+    private GridPane createLoginPane() {
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+        Label usernameLabel = new Label("Usuário:");
+        TextField usernameField = new TextField();
+        Label passwordLabel = new Label("Senha:");
+        PasswordField passwordField = new PasswordField();
+        Button loginButton = new Button("Login");
+
+        gridPane.add(usernameLabel, 0, 0);
+        gridPane.add(usernameField, 1, 0);
+        gridPane.add(passwordLabel, 0, 1);
+        gridPane.add(passwordField, 1, 1);
+        gridPane.add(loginButton, 1, 2);
+
+        loginButton.setOnAction(event -> {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+
+            if (authenticate(username, password)) {
+                showOptionsDialog();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Login inválido", "Usuário ou senha incorretos.");
+            }
+        });
+
+        return gridPane;
+    }
+
+    private MenuBar createMenuBar() {
+        MenuBar menuBar = new MenuBar();
+
+        Menu acionistaMenu = new Menu("Acionista");
+        MenuItem adicionarAcionistaItem = new MenuItem("Adicionar acionista");
+        MenuItem cancelarAcaoItem = new MenuItem("Cancelar ação");
+        MenuItem fazerPagamentoItem = new MenuItem("Fazer pagamento");
+        MenuItem buscarAcionistaItem = new MenuItem("Buscar acionista");
+        acionistaMenu.getItems().addAll(adicionarAcionistaItem, cancelarAcaoItem, fazerPagamentoItem, buscarAcionistaItem);
+
+        Menu funcionarioMenu = new Menu("Funcionário");
+        MenuItem adicionarFuncionarioItem = new MenuItem("Adicionar funcionário");
+        MenuItem removerFuncionarioItem = new MenuItem("Remover funcionário");
+        MenuItem buscarFuncionarioItem = new MenuItem("Buscar funcionário");
+        funcionarioMenu.getItems().addAll(adicionarFuncionarioItem, removerFuncionarioItem, buscarFuncionarioItem);
+
+        menuBar.getMenus().addAll(acionistaMenu, funcionarioMenu);
+
+        adicionarAcionistaItem.setOnAction(event -> showAddAcionistaDialog());
+        cancelarAcaoItem.setOnAction(event -> showCancelarAcaoDialog());
+        fazerPagamentoItem.setOnAction(event -> showFazerPagamentoDialog());
+        buscarAcionistaItem.setOnAction(event -> showBuscarAcionistaDialog());
+
+        adicionarFuncionarioItem.setOnAction(event -> showAddFuncionarioDialog());
+        removerFuncionarioItem.setOnAction(event -> showRemoverFuncionarioDialog());
+        buscarFuncionarioItem.setOnAction(event -> showBuscarFuncionarioDialog());
+
+        return menuBar;
+    }
+
+    private boolean authenticate(String username, String password) {
+        // Aqui você pode implementar a lógica de autenticação do usuário
+        // Verifique se o usuário e a senha fornecidos são válidos
+        // Retorne true se a autenticação for bem-sucedida, caso contrário, retorne false
+        return true; // Exemplo: sempre retorna true para fins de demonstração
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showOptionsDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Opções");
+        stage.setResizable(false);
+
+        VBox vBox = new VBox(10);
+        vBox.setAlignment(Pos.CENTER);
+
+        Button addAcionistaButton = new Button("Adicionar Acionista");
+        Button cancelAcaoButton = new Button("Cancelar Ação");
+        Button makePaymentButton = new Button("Fazer Pagamento");
+        Button addFuncionarioButton = new Button("Adicionar Funcionário");
+        Button removeFuncionarioButton = new Button("Remover Funcionário");
+        Button searchFuncionarioButton = new Button("Buscar Funcionário");
+        Button searchAcionistaButton = new Button("Buscar Acionista");
+
+        addAcionistaButton.setOnAction(event -> showAddAcionistaDialog());
+        cancelAcaoButton.setOnAction(event -> showCancelarAcaoDialog());
+        makePaymentButton.setOnAction(event -> showFazerPagamentoDialog());
+        addFuncionarioButton.setOnAction(event -> showAddFuncionarioDialog());
+        removeFuncionarioButton.setOnAction(event -> showRemoverFuncionarioDialog());
+        searchFuncionarioButton.setOnAction(event -> showBuscarFuncionarioDialog());
+        searchAcionistaButton.setOnAction(event -> showBuscarAcionistaDialog());
+
+        vBox.getChildren().addAll(
+                addAcionistaButton,
+                cancelAcaoButton,
+                makePaymentButton,
+                addFuncionarioButton,
+                removeFuncionarioButton,
+                searchFuncionarioButton,
+                searchAcionistaButton
+        );
+
+        stage.setScene(new Scene(vBox, 300, 300));
+        stage.show();
+    }
+
+    private void showAddAcionistaDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Adicionar Acionista");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de adicionar acionista aqui
+
+        stage.show();
+    }
+
+    private void showCancelarAcaoDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Cancelar Ação");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de cancelar ação aqui
+
+        stage.show();
+    }
+
+    private void showFazerPagamentoDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Fazer Pagamento");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de fazer pagamento aqui
+
+        stage.show();
+    }
+
+    private void showAddFuncionarioDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Adicionar Funcionário");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de adicionar funcionário aqui
+
+        stage.show();
+    }
+
+    private void showRemoverFuncionarioDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Remover Funcionário");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de remover funcionário aqui
+
+        stage.show();
+    }
+
+    private void showBuscarFuncionarioDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Buscar Funcionário");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de buscar funcionário aqui
+
+        stage.show();
+    }
+
+    private void showBuscarAcionistaDialog() {
+        Stage stage = new Stage();
+        stage.initOwner(getStage());
+        stage.setTitle("Buscar Acionista");
+        stage.setResizable(false);
+
+        // Implementar o diálogo de buscar acionista aqui
+
+        stage.show();
+    }
+
+    private Stage getStage() {
+        return (Stage) getHostServices().getWindow();
+    }
+}

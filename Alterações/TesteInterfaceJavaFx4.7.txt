@@ -1,0 +1,411 @@
+import entidades.Acionista;
+import entidades.Funcionario;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class Principal extends Application {
+private List<Acionista> acionistas = new ArrayList<>();
+private List<Funcionario> funcionarios = new ArrayList<>();
+public static void main(String[] args) {
+    launch(args);
+}
+
+@Override
+public void start(Stage primaryStage) {
+    primaryStage.setTitle("Sistema de Gerenciamento de Acionistas e Funcionários");
+
+    // Criação do painel principal
+    VBox root = new VBox(10);
+    root.setAlignment(Pos.CENTER);
+    root.setPadding(new Insets(20));
+
+    // Criação dos botões para cada opção
+    Button cadastrarAcionistaButton = new Button("Cadastrar Acionista");
+    Button editarAcionistaButton = new Button("Editar Acionista");
+    Button cadastrarFuncionarioButton = new Button("Cadastrar Funcionário");
+    Button editarFuncionarioButton = new Button("Editar Funcionário");
+    Button fecharProgramaButton = new Button("Fechar Programa");
+
+    // Definição dos eventos de clique dos botões
+    cadastrarAcionistaButton.setOnAction(e -> cadastrarAcionista());
+    editarAcionistaButton.setOnAction(e -> editarAcionista());
+    cadastrarFuncionarioButton.setOnAction(e -> cadastrarFuncionario());
+    editarFuncionarioButton.setOnAction(e -> editarFuncionario());
+    fecharProgramaButton.setOnAction(e -> primaryStage.close());
+
+    // Criação dos ListViews para acionistas e funcionários
+    ListView<Acionista> acionistasListView = new ListView<>();
+    acionistasListView.setItems(FXCollections.observableArrayList(acionistas));
+    acionistasListView.setPrefWidth(200);
+    acionistasListView.setPrefHeight(300);
+
+    ListView<Funcionario> funcionariosListView = new ListView<>();
+    funcionariosListView.setItems(FXCollections.observableArrayList(funcionarios));
+    funcionariosListView.setPrefWidth(200);
+    funcionariosListView.setPrefHeight(300);
+
+    // Adição dos botões e ListViews ao painel principal
+    HBox buttonsBox = new HBox(10);
+    buttonsBox.setAlignment(Pos.CENTER);
+    buttonsBox.getChildren().addAll(
+            cadastrarAcionistaButton,
+            editarAcionistaButton,
+            cadastrarFuncionarioButton,
+            editarFuncionarioButton,
+            fecharProgramaButton
+    );
+
+    HBox listViewsBox = new HBox(20);
+    listViewsBox.setAlignment(Pos.CENTER);
+    listViewsBox.getChildren().addAll(
+            acionistasListView,
+            funcionariosListView
+    );
+
+    root.getChildren().addAll(
+            buttonsBox,
+            listViewsBox
+    );
+
+    // Criação da cena principal
+    Scene scene = new Scene(root, 600, 400);
+    primaryStage.setScene(scene);
+    primaryStage.show();
+}
+
+private void cadastrarAcionista() {
+    Stage stage = new Stage();
+    stage.setTitle("Cadastrar Acionista");
+
+    VBox root = new VBox(10);
+    root.setAlignment(Pos.CENTER);
+    root.setPadding(new Insets(20));
+
+    Label nomeLabel = new Label("Nome:");
+    TextField nomeTextField = new TextField();
+
+    Label enderecoLabel = new Label("Endereço:");
+    TextField enderecoTextField = new TextField();
+
+    Label cpfLabel = new Label("CPF:");
+    TextField cpfTextField = new TextField();
+
+    Label dataNascimentoLabel = new Label("Data de Nascimento:");
+    DatePicker dataNascimentoPicker = new DatePicker();
+
+    Label tipoAcaoLabel = new Label("Tipo de Ação (Familiar/Individual):");
+    TextField tipoAcaoTextField = new TextField();
+
+    Label dependentesLabel = new Label("Quantidade de Dependentes:");
+    TextField dependentesTextField = new TextField();
+
+    Button cadastrarButton = new Button("Cadastrar");
+    cadastrarButton.setOnAction(e -> {
+        String nome = nomeTextField.getText();
+        String endereco = enderecoTextField.getText();
+        String cpf = cpfTextField.getText();
+        String dataNascimento = dataNascimentoPicker.getValue().toString();
+        String tipoAcao = tipoAcaoTextField.getText();
+        int dependentes = Integer.parseInt(dependentesTextField.getText());
+
+        Acionista acionista = new Acionista(nome, endereco, cpf, dataNascimento, tipoAcao, dependentes);
+        acionistas.add(acionista);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sucesso");
+        alert.setHeaderText(null);
+        alert.setContentText("Acionista cadastrado com sucesso!");
+        alert.showAndWait();
+
+        stage.close();
+    });
+
+    root.getChildren().addAll(
+            nomeLabel,
+            nomeTextField,
+            enderecoLabel,
+            enderecoTextField,
+            cpfLabel,
+            cpfTextField,
+            dataNascimentoLabel,
+            dataNascimentoPicker,
+            tipoAcaoLabel,
+            tipoAcaoTextField,
+            dependentesLabel,
+            dependentesTextField,
+            cadastrarButton
+    );
+
+    Scene scene = new Scene(root, 400, 400);
+    stage.setScene(scene);
+    stage.show();
+}
+
+private void editarAcionista() {
+    Stage stage = new Stage();
+    stage.setTitle("Editar Acionista");
+
+    VBox root = new VBox(10);
+    root.setAlignment(Pos.CENTER);
+    root.setPadding(new Insets(20));
+
+    Label cpfLabel = new Label("CPF:");
+    TextField cpfTextField = new TextField();
+
+    Button editarButton = new Button("Editar");
+    editarButton.setOnAction(e -> {
+        String cpf = cpfTextField.getText();
+
+        Optional<Acionista> acionistaOptional = acionistas.stream()
+                .filter(a -> a.getCpf().equals(cpf))
+                .findFirst();
+
+        if (acionistaOptional.isPresent()) {
+            Acionista acionista = acionistaOptional.get();
+
+            // Criação dos botões para as opções adicionais
+            Button fazerPagamentoButton = new Button("Fazer Pagamento");
+            Button aumentarParcelasButton = new Button("Aumentar Parcelas em Atraso");
+            Button cancelarAcaoButton = new Button("Cancelar Ação");
+
+            // Definição dos eventos de clique dos botões
+            fazerPagamentoButton.setOnAction(event -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Informação");
+                alert.setHeaderText(null);
+                alert.setContentText("Quantidade de parcelas em atraso: " + acionista.getTempo_atraso());
+                alert.showAndWait();
+            });
+
+            aumentarParcelasButton.setOnAction(event -> {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Aumentar Parcelas em Atraso");
+                dialog.setHeaderText(null);
+                dialog.setContentText("Digite a quantidade de parcelas em atraso a serem adicionadas:");
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(parcelas -> {
+                    int quantidade = Integer.parseInt(parcelas);
+                    acionista.setTempo_atraso(acionista.getTempo_atraso() + quantidade);
+                    acionista.setEm_atraso(true);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Sucesso");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Parcelas em atraso aumentadas com sucesso!");
+                    alert.showAndWait();
+                });
+            });
+
+            cancelarAcaoButton.setOnAction(event -> {
+                acionistas.remove(acionista);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Sucesso");
+                alert.setHeaderText(null);
+                alert.setContentText("Ação cancelada com sucesso!");
+                alert.showAndWait();
+                stage.close();
+            });
+
+            root.getChildren().addAll(
+                    fazerPagamentoButton,
+                    aumentarParcelasButton,
+                    cancelarAcaoButton
+            );
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText(null);
+            alert.setContentText("Acionista não encontrado!");
+            alert.showAndWait();
+        }
+    });
+
+    root.getChildren().addAll(
+            cpfLabel,
+            cpfTextField,
+            editarButton
+    );
+
+    Scene scene = new Scene(root, 300, 200);
+    stage.setScene(scene);
+    stage.show();
+}
+
+
+private void cadastrarFuncionario() {
+    Stage stage = new Stage();
+    stage.setTitle("Cadastrar Funcionário");
+
+    VBox root = new VBox(10);
+    root.setAlignment(Pos.CENTER);
+    root.setPadding(new Insets(20));
+
+    Label nomeLabel = new Label("Nome:");
+    TextField nomeTextField = new TextField();
+
+    Label enderecoLabel = new Label("Endereço:");
+    TextField enderecoTextField = new TextField();
+
+    Label cpfLabel = new Label("CPF:");
+    TextField cpfTextField = new TextField();
+
+    Label dataNascimentoLabel = new Label("Data de Nascimento:");
+    DatePicker dataNascimentoPicker = new DatePicker();
+
+    Label salarioLabel = new Label("Salário:");
+    TextField salarioTextField = new TextField();
+
+    Label funcaoLabel = new Label("Função:");
+    TextField funcaoTextField = new TextField();
+
+    Button cadastrarButton = new Button("Cadastrar");
+    cadastrarButton.setOnAction(e -> {
+        String nome = nomeTextField.getText();
+        String endereco = enderecoTextField.getText();
+        String cpf = cpfTextField.getText();
+        String dataNascimento = dataNascimentoPicker.getValue().toString();
+        double salario = Double.parseDouble(salarioTextField.getText());
+        String funcao = funcaoTextField.getText();
+
+        Funcionario funcionario = new Funcionario(nome, endereco, cpf, dataNascimento, salario, funcao);
+        funcionarios.add(funcionario);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sucesso");
+        alert.setHeaderText(null);
+        alert.setContentText("Funcionário cadastrado com sucesso!");
+        alert.showAndWait();
+
+        stage.close();
+    });
+
+    root.getChildren().addAll(
+            nomeLabel,
+            nomeTextField,
+            enderecoLabel,
+            enderecoTextField,
+            cpfLabel,
+            cpfTextField,
+            dataNascimentoLabel,
+            dataNascimentoPicker,
+            salarioLabel,
+            salarioTextField,
+            funcaoLabel,
+            funcaoTextField,
+            cadastrarButton
+    );
+
+    Scene scene = new Scene(root, 400, 400);
+    stage.setScene(scene);
+    stage.show();
+}
+
+private void editarFuncionario() {
+    Stage stage = new Stage();
+    stage.setTitle("Editar Funcionário");
+
+    VBox root = new VBox(10);
+    root.setAlignment(Pos.CENTER);
+    root.setPadding(new Insets(20));
+
+    Label cpfLabel = new Label("CPF:");
+    TextField cpfTextField = new TextField();
+
+    Button editarButton = new Button("Editar");
+    editarButton.setOnAction(e -> {
+        String cpf = cpfTextField.getText();
+
+        Optional<Funcionario> funcionarioOptional = funcionarios.stream()
+                .filter(f -> f.getCpf().equals(cpf))
+                .findFirst();
+
+        if (funcionarioOptional.isPresent()) {
+            Funcionario funcionario = funcionarioOptional.get();
+
+            // Criação dos botões para as opções adicionais
+            Button mudarFuncaoButton = new Button("Mudar Função");
+            Button aumentarSalarioButton = new Button("Aumentar Salário");
+            Button demitirFuncionarioButton = new Button("Demitir Funcionário");
+
+            // Definição dos eventos de clique dos botões
+            mudarFuncaoButton.setOnAction(event -> {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Mudar Função");
+                dialog.setHeaderText(null);
+                dialog.setContentText("Digite a nova função do funcionário:");
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(novaFuncao -> {
+                    funcionario.setFuncao(novaFuncao);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Sucesso");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Função alterada com sucesso!");
+                    alert.showAndWait();
+                });
+            });
+
+            aumentarSalarioButton.setOnAction(event -> {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Aumentar Salário");
+                dialog.setHeaderText(null);
+                dialog.setContentText("Digite o acréscimo do salário do funcionário em porcentagem:");
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(acrescimo -> {
+                    double aumentoPercentual = Double.parseDouble(acrescimo);
+                    double novoSalario = funcionario.getSalario() * (1 + (aumentoPercentual / 100));
+                    funcionario.setSalario(novoSalario);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Sucesso");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Salário atualizado com sucesso!");
+                    alert.showAndWait();
+                });
+            });
+
+            demitirFuncionarioButton.setOnAction(event -> {
+                funcionarios.remove(funcionario);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Sucesso");
+                alert.setHeaderText(null);
+                alert.setContentText("Funcionário demitido com sucesso!");
+                alert.showAndWait();
+                stage.close();
+            });
+
+            root.getChildren().addAll(
+                    mudarFuncaoButton,
+                    aumentarSalarioButton,
+                    demitirFuncionarioButton
+            );
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro");
+            alert.setHeaderText(null);
+            alert.setContentText("Funcionário não encontrado!");
+            alert.showAndWait();
+        }
+    });
+
+    root.getChildren().addAll(
+            cpfLabel,
+            cpfTextField,
+            editarButton
+    );
+
+    Scene scene = new Scene(root, 300, 200);
+    stage.setScene(scene);
+    stage.show();
+}

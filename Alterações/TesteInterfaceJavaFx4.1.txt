@@ -1,0 +1,175 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class Principal extends Application {
+    private List<Acionista> acionistas = new ArrayList<>();
+    private List<Funcionario> funcionarios = new ArrayList<>();
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Sistema de Gerenciamento de Acionistas e Funcionários");
+
+        // Alteração do painel principal de VBox para HBox
+        HBox root = new HBox(10);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+
+        VBox buttonsVBox = new VBox(10);
+
+        Button cadastrarAcionistaButton = new Button("Cadastrar Acionista");
+        Button editarAcionistaButton = new Button("Editar Acionista");
+        Button cadastrarFuncionarioButton = new Button("Cadastrar Funcionário");
+        Button editarFuncionarioButton = new Button("Editar Funcionário");
+        Button fecharProgramaButton = new Button("Fechar Programa");
+
+        cadastrarAcionistaButton.setOnAction(e -> cadastrarAcionista());
+        editarAcionistaButton.setOnAction(e -> editarAcionista());
+        cadastrarFuncionarioButton.setOnAction(e -> cadastrarFuncionario());
+        editarFuncionarioButton.setOnAction(e -> editarFuncionario());
+        fecharProgramaButton.setOnAction(e -> primaryStage.close());
+
+        buttonsVBox.getChildren().addAll(
+                cadastrarAcionistaButton,
+                editarAcionistaButton,
+                cadastrarFuncionarioButton,
+                editarFuncionarioButton,
+                fecharProgramaButton
+        );
+
+        ListView<String> acionistasListView = new ListView<>();
+        acionistas.forEach(a -> acionistasListView.getItems().add(a.getNome()));
+        ListView<String> funcionariosListView = new ListView<>();
+        funcionarios.forEach(f -> funcionariosListView.getItems().add(f.getNome()));
+
+        root.getChildren().addAll(
+                buttonsVBox,
+                acionistasListView,
+                funcionariosListView
+        );
+
+        Scene scene = new Scene(root, 400, 300);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void cadastrarAcionista() {
+        //...
+    }
+
+    private void editarAcionista() {
+        Stage stage = new Stage();
+        stage.setTitle("Editar Acionista");
+
+        VBox root = new VBox(10);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+
+        Label cpfLabel = new Label("CPF:");
+        TextField cpfTextField = new TextField();
+
+        Button editarButton = new Button("Editar");
+        editarButton.setOnAction(e -> {
+            String cpf = cpfTextField.getText();
+
+            Optional<Acionista> acionistaOptional = acionistas.stream()
+                    .filter(a -> a.getCpf().equals(cpf))
+                    .findFirst();
+
+            if (acionistaOptional.isPresent()) {
+                Acionista acionista = acionistaOptional.get();
+
+                // Janela de edição de Acionista
+                Stage editarStage = new Stage();
+                editarStage.setTitle("Editar Acionista");
+
+                // Adicione os campos de edição aqui
+                
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erro");
+                alert.setHeaderText(null);
+                alert.setContentText("Acionista não encontrado!");
+                alert.showAndWait();
+            }
+
+            stage.close();
+        });
+
+        root.getChildren().addAll(
+                cpfLabel,
+                cpfTextField,
+                editarButton
+        );
+
+        Scene scene = new Scene(root, 400, 300);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void cadastrarFuncionario() {
+        //...
+    }
+
+    private void editarFuncionario() {
+        Stage stage = new Stage();
+        stage.setTitle("Editar Funcionário");
+
+        VBox root = new VBox(10);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+
+        Label cpfLabel = new Label("CPF:");
+        TextField cpfTextField = new TextField();
+
+        Button editarButton = new Button("Editar");
+        editarButton.setOnAction(e -> {
+            String cpf = cpfTextField.getText();
+
+            Optional<Funcionario> funcionarioOptional = funcionarios.stream()
+                    .filter(f -> f.getCpf().equals(cpf))
+                    .findFirst();
+
+            if (funcionarioOptional.isPresent()) {
+                Funcionario funcionario = funcionarioOptional.get();
+
+                // Janela de edição de Funcionário
+                Stage editarStage = new Stage();
+                editarStage.setTitle("Editar Funcionário");
+
+                // Adicione os campos de edição aqui
+                
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erro");
+                alert.setHeaderText(null);
+                alert.setContentText("Funcionário não encontrado!");
+                alert.showAndWait();
+            }
+
+            stage.close();
+        });
+
+        root.getChildren().addAll(
+                cpfLabel,
+                cpfTextField,
+                editarButton
+        );
+
+        Scene scene = new Scene(root, 400, 300);
+        stage.setScene(scene);
+        stage.show();
+    }
+}
